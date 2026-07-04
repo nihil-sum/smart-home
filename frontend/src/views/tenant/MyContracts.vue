@@ -5,7 +5,9 @@
     </div>
 
     <el-table :data="contracts" v-loading="loading" stripe style="width:100%">
-      <el-table-column prop="house?.title || '--'" label="房源" min-width="160" />
+      <el-table-column label="房源" min-width="160">
+        <template #default="{ row }">{{ row.houseId?.title || '--' }}</template>
+      </el-table-column>
       <el-table-column label="开始日期" width="110">
         <template #default="{ row }">{{ formatDate(row.startDate) }}</template>
       </el-table-column>
@@ -14,7 +16,7 @@
       </el-table-column>
       <el-table-column label="租金" width="110">
         <template #default="{ row }">
-          <span class="price-text">¥{{ row.rent }}</span>
+          <span class="price-text">¥{{ Number(row.rent).toLocaleString() }}</span>
         </template>
       </el-table-column>
       <el-table-column label="押金" width="110">
@@ -75,8 +77,8 @@ function formatDate(dateStr) {
 async function loadContracts() {
   loading.value = true
   try {
-    const res = await request.get('/contracts/my')
-    contracts.value = res.contracts || res.data || []
+    const res = await request.get('/contracts')
+    contracts.value = Array.isArray(res) ? res : (res.contracts || res.data || [])
   } catch {
     contracts.value = []
   } finally {
