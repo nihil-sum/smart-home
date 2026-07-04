@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <div class="sidebar-layout">
-      <el-menu :default-active="activeMenu" mode="horizontal" class="landlord-menu">
+      <el-menu :default-active="activeMenu" mode="horizontal">
         <el-menu-item index="/landlord/houses" @click="$router.push('/landlord/houses')">
           <el-icon><HomeFilled /></el-icon>房源管理
         </el-menu-item>
@@ -34,17 +34,3 @@ const activeMenu = computed(() => {
   return p
 })
 </script>
-
-<style scoped>
-.sidebar-layout {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.landlord-menu {
-  margin-bottom: 20px;
-  border-bottom: 2px solid #e4e7ed;
-}
-.content-area {
-  min-height: 400px;
-}
-</style>

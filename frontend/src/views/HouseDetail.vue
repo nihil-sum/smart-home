@@ -23,7 +23,7 @@
         <el-col :span="8">
           <el-card shadow="never">
             <h2 class="house-title">{{ house.title }}</h2>
-            <div class="price-tag">¥{{ house.rent }}/月</div>
+            <div class="price-tag">¥{{ Number(house.rent).toLocaleString() }}/月</div>
             <el-divider />
             <div class="info-list">
               <div class="info-row">
@@ -36,7 +36,7 @@
               </div>
               <div class="info-row">
                 <span class="label">押金：</span>
-                <span>¥{{ house.deposit || 0 }}</span>
+                <span>¥{{ Number(house.deposit || 0).toLocaleString() }}</span>
               </div>
               <div class="info-row">
                 <span class="label">地址：</span>
@@ -248,6 +248,11 @@ onMounted(() => {
 <style scoped>
 .back-btn {
   margin-bottom: 16px;
+  font-size: 14px;
+  color: #6b7272;
+}
+.back-btn:hover {
+  color: #0d7a7a;
 }
 .detail-image {
   width: 100%;
@@ -258,28 +263,40 @@ onMounted(() => {
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 12px;
+  color: #1a1d1d;
 }
 .price-tag {
   font-size: 28px;
   font-weight: 700;
-  color: #f56c6c;
+  color: #d4943a;
 }
 .info-list {
   font-size: 14px;
-  color: #606266;
+  color: #1a1d1d;
 }
 .info-row {
-  padding: 6px 0;
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
 }
 .label {
-  color: #909399;
+  color: #6b7272;
+  width: 60px;
+  flex-shrink: 0;
 }
 .section-card {
-  margin-top: 16px;
+  margin-top: 20px;
+  border-radius: 8px;
 }
 .section-card h3 {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   font-size: 18px;
+  font-weight: 600;
+  color: #1a1d1d;
+}
+.section-card p {
+  color: #1a1d1d;
+  line-height: 1.8;
 }
 .facilities-list {
   display: flex;
@@ -290,7 +307,10 @@ onMounted(() => {
   font-size: 13px;
 }
 .review-item {
-  padding: 8px 0;
+  padding: 12px 0;
+}
+.review-item:last-child .el-divider {
+  display: none;
 }
 .review-header {
   display: flex;
@@ -299,7 +319,7 @@ onMounted(() => {
   margin-bottom: 8px;
 }
 .review-content {
-  color: #606266;
+  color: #1a1d1d;
   line-height: 1.6;
 }
 </style>

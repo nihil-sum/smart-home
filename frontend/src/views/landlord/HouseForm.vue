@@ -1,94 +1,99 @@
 <template>
   <div>
-    <h3>{{ isEdit ? '编辑房源' : '发布新房源' }}</h3>
-    <el-form
-      ref="formRef"
-      :model="form"
-      :rules="rules"
-      label-width="100px"
-      class="house-form"
-      v-loading="loading"
-    >
-      <el-form-item label="标题" prop="title">
-        <el-input v-model="form.title" placeholder="请输入房源标题" />
-      </el-form-item>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="面积" prop="area">
-            <el-input-number v-model="form.area" :min="1" :max="10000" style="width:100%" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="租金" prop="rent">
-            <el-input-number v-model="form.rent" :min="0" :max="999999" style="width:100%" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="押金" prop="deposit">
-            <el-input-number v-model="form.deposit" :min="0" :max="999999" style="width:100%" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="类型" prop="type">
-            <el-select v-model="form.type" style="width:100%">
-              <el-option label="整租" value="整租" />
-              <el-option label="合租" value="合租" />
-              <el-option label="单间" value="单间" />
-              <el-option label="公寓" value="公寓" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="面积范围" prop="size">
-            <el-input v-model="form.size" placeholder="如: 3室2厅" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-form-item label="地址" prop="address">
-        <el-input v-model="form.address" placeholder="请输入详细地址" />
-      </el-form-item>
-      <el-form-item label="配套设施" prop="facilities">
-        <el-select v-model="form.facilities" multiple filterable allow-create default-first-option style="width:100%">
-          <el-option label="WIFI" value="WIFI" />
-          <el-option label="空调" value="空调" />
-          <el-option label="冰箱" value="冰箱" />
-          <el-option label="洗衣机" value="洗衣机" />
-          <el-option label="热水器" value="热水器" />
-          <el-option label="电视" value="电视" />
-          <el-option label="暖气" value="暖气" />
-          <el-option label="床" value="床" />
-          <el-option label="衣柜" value="衣柜" />
-          <el-option label="电梯" value="电梯" />
-          <el-option label="车位" value="车位" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="房屋图片" prop="images">
-        <el-input v-model="imageInput" placeholder="输入图片URL后添加" style="width:400px" class="mr-10" />
-        <el-button @click="addImage">添加</el-button>
-        <div class="image-list" v-if="form.images.length">
-          <el-tag
-            v-for="(img, idx) in form.images"
-            :key="idx"
-            closable
-            @close="form.images.splice(idx, 1)"
-            class="image-tag"
-          >
-            {{ img.substring(0, 40) }}...
-          </el-tag>
-        </div>
-      </el-form-item>
-      <el-form-item label="描述" prop="description">
-        <el-input v-model="form.description" type="textarea" rows="4" placeholder="请描述房屋的详细情况" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm" :loading="submitLoading">
-          {{ isEdit ? '保存修改' : '提交审核' }}
-        </el-button>
-        <el-button @click="$router.back()">取消</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="card-header">
+      <h3>{{ isEdit ? '编辑房源' : '发布新房源' }}</h3>
+    </div>
+    <el-card shadow="never" class="form-card-wrapper">
+      <el-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        label-width="100px"
+        v-loading="loading"
+      >
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="form.title" placeholder="请输入房源标题" />
+        </el-form-item>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="面积" prop="area">
+              <el-input-number v-model="form.area" :min="1" :max="10000" style="width:100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="租金" prop="rent">
+              <el-input-number v-model="form.rent" :min="0" :max="999999" style="width:100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="押金" prop="deposit">
+              <el-input-number v-model="form.deposit" :min="0" :max="999999" style="width:100%" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="类型" prop="type">
+              <el-select v-model="form.type" style="width:100%">
+                <el-option label="整租" value="整租" />
+                <el-option label="合租" value="合租" />
+                <el-option label="单间" value="单间" />
+                <el-option label="公寓" value="公寓" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="户型" prop="size">
+              <el-input v-model="form.size" placeholder="如: 3室2厅" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="地址" prop="address">
+          <el-input v-model="form.address" placeholder="请输入详细地址" />
+        </el-form-item>
+        <el-form-item label="配套设施" prop="facilities">
+          <el-select v-model="form.facilities" multiple filterable allow-create default-first-option style="width:100%">
+            <el-option label="WIFI" value="WIFI" />
+            <el-option label="空调" value="空调" />
+            <el-option label="冰箱" value="冰箱" />
+            <el-option label="洗衣机" value="洗衣机" />
+            <el-option label="热水器" value="热水器" />
+            <el-option label="电视" value="电视" />
+            <el-option label="暖气" value="暖气" />
+            <el-option label="床" value="床" />
+            <el-option label="衣柜" value="衣柜" />
+            <el-option label="电梯" value="电梯" />
+            <el-option label="车位" value="车位" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="房屋图片" prop="images">
+          <div class="flex-row">
+            <el-input v-model="imageInput" placeholder="输入图片URL后添加" style="width:400px" class="mr-10" />
+            <el-button @click="addImage">添加</el-button>
+          </div>
+          <div class="image-list" v-if="form.images.length">
+            <el-tag
+              v-for="(img, idx) in form.images"
+              :key="idx"
+              closable
+              @close="form.images.splice(idx, 1)"
+              class="image-tag"
+            >
+              {{ img.substring(0, 40) }}...
+            </el-tag>
+          </div>
+        </el-form-item>
+        <el-form-item label="描述" prop="description">
+          <el-input v-model="form.description" type="textarea" rows="4" placeholder="请描述房屋的详细情况" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm" :loading="submitLoading">
+            {{ isEdit ? '保存修改' : '提交审核' }}
+          </el-button>
+          <el-button @click="$router.back()">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
   </div>
 </template>
 
@@ -189,8 +194,9 @@ onMounted(loadHouse)
 </script>
 
 <style scoped>
-.house-form {
+.form-card-wrapper {
   max-width: 800px;
+  border-radius: 8px;
 }
 .image-list {
   margin-top: 8px;
@@ -204,5 +210,9 @@ onMounted(loadHouse)
 }
 .mr-10 {
   margin-right: 8px;
+}
+.flex-row {
+  display: flex;
+  align-items: center;
 }
 </style>

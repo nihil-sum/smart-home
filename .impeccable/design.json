@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-04T01:10:00+08:00",
+  "title": "Design System: 智慧房屋租赁系统",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Professional Teal", "canonical": "oklch(0.48 0.11 195)", "tonalRamp": ["oklch(0.15 0.03 195)", "oklch(0.25 0.06 195)", "oklch(0.35 0.09 195)", "oklch(0.48 0.11 195)", "oklch(0.60 0.09 195)", "oklch(0.72 0.06 195)", "oklch(0.84 0.03 195)", "oklch(0.94 0.02 195)"] },
+      "accent": { "role": "accent", "displayName": "Warm Amber", "canonical": "oklch(0.62 0.13 70)", "tonalRamp": ["oklch(0.15 0.02 70)", "oklch(0.28 0.05 70)", "oklch(0.42 0.09 70)", "oklch(0.62 0.13 70)", "oklch(0.74 0.10 70)", "oklch(0.84 0.07 70)", "oklch(0.92 0.04 70)", "oklch(0.96 0.02 70)"] },
+      "neutral-bg": { "role": "neutral", "displayName": "Pure White", "canonical": "oklch(1 0 0)", "tonalRamp": [] },
+      "neutral-surface": { "role": "neutral", "displayName": "Off White", "canonical": "oklch(0.975 0.005 195)", "tonalRamp": [] },
+      "neutral-ink": { "role": "neutral", "displayName": "Body Text", "canonical": "oklch(0.15 0.02 195)", "tonalRamp": [] },
+      "neutral-muted": { "role": "neutral", "displayName": "Muted Text", "canonical": "oklch(0.52 0.01 195)", "tonalRamp": [] },
+      "neutral-border": { "role": "neutral", "displayName": "Border Light", "canonical": "oklch(0.92 0.005 195)", "tonalRamp": [] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "页面大标题、欢迎语。每个页面不超过一个。" },
+      "title": { "displayName": "Title", "purpose": "区块标题、卡片标题、弹窗标题。" },
+      "body": { "displayName": "Body", "purpose": "正文、表格内容、详情描述。" },
+      "label": { "displayName": "Label", "purpose": "表单标签、辅助说明、时间戳。" }
+    },
+    "shadows": [
+      { "name": "card", "value": "0 1px 4px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)", "purpose": "卡片、面板、表单的默认阴影。" },
+      { "name": "hover", "value": "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)", "purpose": "可交互卡片悬停态、下拉菜单。" },
+      { "name": "modal", "value": "0 8px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06)", "purpose": "弹窗、对话框。" }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "状态过渡的默认缓动。" },
+      { "name": "duration-fast", "value": "200ms", "purpose": "悬停、聚焦等即时反馈。" },
+      { "name": "duration-slow", "value": "300ms", "purpose": "面板展开、弹窗出现等较慢过渡。" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "主操作按钮。用于提交、确认、保存等关键操作。",
+      "html": "<button class=\"ds-btn-primary\">保存</button>",
+      "css": ".ds-btn-primary { background: #0d7a7a; color: #fff; padding: 10px 20px; font-size: 14px; font-weight: 500; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; } .ds-btn-primary:hover { background: #0b6b6b; }"
+    },
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button-default",
+      "description": "次要操作按钮。用于取消、返回等非主要操作。",
+      "html": "<button class=\"ds-btn-default\">取消</button>",
+      "css": ".ds-btn-default { background: #fff; color: #1a1d1d; padding: 10px 20px; font-size: 14px; border: 1px solid #e2e6e6; border-radius: 8px; cursor: pointer; transition: border-color 0.2s, background 0.2s; } .ds-btn-default:hover { border-color: #0d7a7a; color: #0d7a7a; }"
+    },
+    {
+      "name": "Status Tag",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "状态标签。用于展示审核/预约/合同等业务状态。",
+      "html": "<span class=\"ds-tag ds-tag-success\">已通过</span>",
+      "css": ".ds-tag { display: inline-flex; align-items: center; padding: 2px 8px; font-size: 13px; font-weight: 600; border-radius: 4px; line-height: 1.5; } .ds-tag-success { background: #e8f5e9; color: #2e7d5e; } .ds-tag-warning { background: #fef5e7; color: #b87a28; } .ds-tag-danger { background: #fdecea; color: #c4453e; } .ds-tag-info { background: #e8f0f2; color: #3a6b78; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "文本输入框。用于表单输入。",
+      "html": "<input class=\"ds-input\" placeholder=\"请输入\" type=\"text\" />",
+      "css": ".ds-input { width: 100%; padding: 8px 12px; font-size: 14px; color: #1a1d1d; background: #fff; border: 1px solid #e2e6e6; border-radius: 4px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; box-sizing: border-box; } .ds-input:focus { border-color: #0d7a7a; box-shadow: 0 0 0 2px rgba(13,122,122,0.2); } .ds-input::placeholder { color: #6b7272; }"
+    },
+    {
+      "name": "House Card",
+      "kind": "card",
+      "refersTo": "card-default",
+      "description": "房源卡片。在首页和搜索列表中展示房源信息。",
+      "html": "<div class=\"ds-card-house\"><div class=\"ds-card-house-img\"><div style=\"width:100%;height:100%;background:#e2e6e6;display:flex;align-items:center;justify-content:center;color:#6b7272;font-size:13px\">暂无图片</div></div><div class=\"ds-card-house-body\"><h3 style=\"font-size:16px;font-weight:600;color:#1a1d1d;margin:0 0 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\">精装两居室</h3><div style=\"display:flex;gap:16px;font-size:13px;color:#6b7272;margin-bottom:6px\"><span>85㎡</span><span>整租</span></div><div style=\"font-size:13px;color:#909399;margin-bottom:8px\">北京市朝阳区</div><div style=\"display:flex;justify-content:flex-end;padding-top:8px;border-top:1px solid #f0f0f0\"><span style=\"font-size:18px;font-weight:600;color:#d9605a\">¥4500/月</span></div></div></div>",
+      "css": ".ds-card-house { background: #fff; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04); } .ds-card-house:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04); } .ds-card-house-img { height: 180px; overflow: hidden; } .ds-card-house-body { padding: 12px; }"
+    },
+    {
+      "name": "Navigation Item",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "顶部导航栏项目。",
+      "html": "<a class=\"ds-nav-item ds-nav-active\">房源管理</a>",
+      "css": ".ds-nav-item { display: inline-flex; align-items: center; gap: 4px; padding: 0 16px; height: 60px; font-size: 14px; color: #6b7272; text-decoration: none; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; cursor: pointer; } .ds-nav-item:hover { color: #0d7a7a; } .ds-nav-active { color: #0d7a7a; border-bottom-color: #0d7a7a; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Trusted Steward",
+    "overview": "智慧房屋租赁系统的设计语言围绕\"专业管家\"这一核心隐喻展开。它不是冷冰冰的管理工具，而是一位值得信赖的房产管家——专业、高效、透明，让租客安心找房，让房东轻松管房，让管理员有效控盘。设计上追求专业清晰、可信可靠、高效有序的气质。信息层级分明，操作路径流畅，状态反馈即时。",
+    "keyCharacteristics": [
+      "蓝绿色主调传递专业与信任，暖金色点缀增加温度和人文感",
+      "克制的信息密度，呼吸感留白，降低认知负担",
+      "卡片式内容组织，轻量阴影营造层次",
+      "一致的状态标识体系（颜色、图标、文字），让状态一目了然",
+      "角色导向的导航和布局，每个角色只看到与自己相关的功能"
+    ],
+    "rules": [
+      { "name": "The Restrained Accent Rule", "body": "Warm Amber 的使用面积不超过界面的 10%。它的稀缺性即是力量。", "section": "colors" },
+      { "name": "The One Weight Rule", "body": "不使用 300 和 700+ 字重。层级清晰只需 Regular 和 Semibold 两档。", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "界面在静态状态下保持扁平。阴影仅作为交互反馈或层级区分出现。", "section": "elevation" }
+    ],
+    "dos": [
+      "使用蓝绿主色 (#0d7a7a) 作为主要交互颜色，保持品牌一致性",
+      "在表单提交、数据加载等操作中提供明确的加载态和结果反馈",
+      "使用纯白背景 (#ffffff) 承载内容",
+      "为每个关键状态使用颜色 + 文字 + 图标的组合标识",
+      "保持页面间距的一致性"
+    ],
+    "donts": [
+      "使用除 Warm Amber 之外的第二种强调色",
+      "在彩色背景上使用灰色文字",
+      "卡片嵌套卡片",
+      "使用玻璃拟态、渐变色文字或装饰性大面积插画",
+      "使用任意 z-index 值而非语义化体系",
+      "使用 bounce/elastic 缓动函数"
+    ]
+  }
+}

@@ -26,10 +26,10 @@
             <el-input v-model="form.confirmPassword" type="password" show-password placeholder="请确认密码" />
           </el-form-item>
           <el-form-item label="角色" prop="role">
-            <el-select v-model="form.role" style="width:100%">
-              <el-option label="租户" value="tenant" />
-              <el-option label="房东" value="landlord" />
-            </el-select>
+            <el-radio-group v-model="form.role" class="role-radio-group">
+              <el-radio-button value="tenant">租户</el-radio-button>
+              <el-radio-button value="landlord">房东</el-radio-button>
+            </el-radio-group>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" native-type="submit" :loading="loading" style="width:100%">
@@ -112,28 +112,15 @@ async function handleRegister() {
 </script>
 
 <style scoped>
-.form-wrapper {
+.role-radio-group {
+  width: 100%;
   display: flex;
+}
+.role-radio-group .el-radio-button {
+  flex: 1;
+}
+.role-radio-group .el-radio-button__inner {
+  width: 100%;
   justify-content: center;
-  align-items: center;
-  min-height: calc(100vh - 180px);
-}
-.form-card {
-  width: 480px;
-  padding: 20px;
-}
-.form-title {
-  text-align: center;
-  margin-bottom: 24px;
-  font-size: 24px;
-  color: #303133;
-}
-.form-footer {
-  text-align: center;
-  font-size: 14px;
-  color: #909399;
-}
-.form-footer a {
-  color: #409eff;
 }
 </style>

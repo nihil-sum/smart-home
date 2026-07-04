@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <div class="sidebar-layout">
-      <el-menu :default-active="activeMenu" mode="horizontal" class="tenant-menu">
+      <el-menu :default-active="activeMenu" mode="horizontal">
         <el-menu-item index="/tenant/appointments" @click="$router.push('/tenant/appointments')">
           <el-icon><Calendar /></el-icon>我的预约
         </el-menu-item>
@@ -27,17 +27,3 @@ import { Calendar, Document, Star } from '@element-plus/icons-vue'
 const route = useRoute()
 const activeMenu = computed(() => route.path)
 </script>
-
-<style scoped>
-.sidebar-layout {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.tenant-menu {
-  margin-bottom: 20px;
-  border-bottom: 2px solid #e4e7ed;
-}
-.content-area {
-  min-height: 400px;
-}
-</style>

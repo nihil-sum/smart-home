@@ -11,28 +11,33 @@
       <el-table-column prop="note" label="备注" min-width="150" show-overflow-tooltip />
       <el-table-column label="状态" width="100">
         <template #default="{ row }">
-          <el-tag :type="statusType(row.status)" size="small">{{ statusText(row.status) }}</el-tag>
+          <el-tag :type="statusType(row.status)" size="small" class="status-tag">{{ statusText(row.status) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="160" fixed="right">
+      <el-table-column label="操作" width="180" fixed="right">
         <template #default="{ row }">
-          <el-button
-            v-if="row.status === 'pending'"
-            type="success"
-            size="small"
-            @click="handleAction(row.id, 'confirmed')"
-          >确认</el-button>
-          <el-button
-            v-if="row.status === 'pending'"
-            type="danger"
-            size="small"
-            @click="handleAction(row.id, 'rejected')"
-          >拒绝</el-button>
+          <template v-if="row.status === 'pending'">
+            <el-button type="success" size="small" @click="handleAction(row.id, 'confirmed')">确认</el-button>
+            <el-button type="danger" size="small" @click="showRejectDialog(row.id)">拒绝</el-button>
+          </template>
           <span v-else>-</span>
         </template>
       </el-table-column>
     </el-table>
     <el-empty v-if="!loading && appointments.length === 0" description="暂无预约记录" />
+
+    <el-dialog v-model="rejectDialogVisible" title="拒绝预约" width="400px">
+      <el-input
+        v-model="rejectReason"
+        type="textarea"
+        :rows="3"
+        placeholder="请输入拒绝原因（选填）"
+      />
+      <template #footer>
+        <el-button @click="rejectDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitReject" :loading="rejectLoading">确定</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -43,6 +48,10 @@ import request from '../../utils/request'
 
 const appointments = ref([])
 const loading = ref(false)
+const rejectDialogVisible = ref(false)
+const rejectReason = ref('')
+const rejectId = ref(null)
+const rejectLoading = ref(false)
 
 function statusType(s) {
   return { pending: 'warning', confirmed: 'success', cancelled: 'info', rejected: 'danger' }[s] || 'info'
@@ -65,11 +74,30 @@ async function loadAppointments() {
 
 async function handleAction(id, action) {
   try {
-    const label = action === 'confirmed' ? '确认' : '拒绝'
     await request.put(`/appointments/${id}/${action === 'confirmed' ? 'confirm' : 'reject'}`)
-    ElMessage.success(`已${label}该预约`)
+    ElMessage.success(action === 'confirmed' ? '已确认该预约' : '已拒绝该预约')
     loadAppointments()
   } catch {}
+}
+
+function showRejectDialog(id) {
+  rejectId.value = id
+  rejectReason.value = ''
+  rejectDialogVisible.value = true
+}
+
+async function submitReject() {
+  rejectLoading.value = true
+  try {
+    await request.put(`/appointments/${rejectId.value}/reject`, { reason: rejectReason.value })
+    ElMessage.success('已拒绝该预约')
+    rejectDialogVisible.value = false
+    loadAppointments()
+  } catch {
+    // handled
+  } finally {
+    rejectLoading.value = false
+  }
 }
 
 onMounted(loadAppointments)

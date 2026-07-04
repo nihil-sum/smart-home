@@ -1,23 +1,27 @@
 <template>
-  <el-footer class="footer">
+  <footer class="footer">
     <div class="footer-inner">
-      <p>&copy; 2026 智慧房屋租赁系统. All rights reserved.</p>
+      <p>© {{ year }} 智慧房屋租赁系统 · 专业 · 可信赖 · 高效</p>
     </div>
-  </el-footer>
+  </footer>
 </template>
+
+<script setup>
+const year = new Date().getFullYear()
+</script>
 
 <style scoped>
 .footer {
-  background: #303133;
-  color: #c0c4cc;
-  text-align: center;
-  padding: 20px 0;
-  height: auto;
+  background: #fff;
+  border-top: 1px solid #e2e6e6;
   margin-top: auto;
 }
 .footer-inner {
   max-width: 1200px;
   margin: 0 auto;
-  font-size: 14px;
+  padding: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: #6b7272;
 }
 </style>

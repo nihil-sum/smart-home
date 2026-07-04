@@ -30,17 +30,3 @@ import { User, HomeFilled, DataAnalysis, Setting } from '@element-plus/icons-vue
 const route = useRoute()
 const activeMenu = computed(() => route.path)
 </script>
-
-<style scoped>
-.sidebar-layout {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.admin-menu {
-  margin-bottom: 20px;
-  border-bottom: 2px solid #e4e7ed;
-}
-.content-area {
-  min-height: 400px;
-}
-</style>

@@ -2,16 +2,16 @@
   <div>
     <div class="card-header">
       <h3>房源审核</h3>
-      <el-select v-model="statusFilter" placeholder="筛选状态" @change="loadHouses" style="width:140px">
+      <el-select v-model="statusFilter" placeholder="筛选状态" @change="loadHouses" style="width:140px" clearable>
         <el-option label="待审核" value="pending" />
         <el-option label="已上架" value="approved" />
         <el-option label="未通过" value="rejected" />
-        <el-option label="全部" value="" />
       </el-select>
     </div>
+
     <el-table :data="houses" v-loading="loading" stripe style="width:100%">
       <el-table-column prop="title" label="标题" min-width="160" show-overflow-tooltip />
-      <el-table-column prop="landlord?.name || landlord?.phone || '--'" label="房东" width="120" />
+      <el-table-column label="房东" width="130" prop="landlord.name" />
       <el-table-column prop="area" label="面积" width="80">
         <template #default="{ row }">{{ row.area }}㎡</template>
       </el-table-column>
@@ -20,26 +20,47 @@
       </el-table-column>
       <el-table-column label="状态" width="100">
         <template #default="{ row }">
-          <el-tag :type="statusType(row.status)" size="small">{{ statusText(row.status) }}</el-tag>
+          <el-tag :type="statusType(row.status)" size="small" class="status-tag">{{ statusText(row.status) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="180" fixed="right">
+      <el-table-column label="操作" width="240" fixed="right">
         <template #default="{ row }">
+          <el-button size="small" @click="showDetail(row)">查看</el-button>
           <template v-if="row.status === 'pending'">
-            <el-button type="success" size="small" @click="handleReview(row.id, 'approved')">通过</el-button>
-            <el-button type="danger" size="small" @click="showRejectDialog(row.id)">拒绝</el-button>
+            <el-button type="primary" size="small" @click="handleReview(row.id, 'approved')">通过</el-button>
+            <el-button size="small" @click="showRejectDialog(row.id)">拒绝</el-button>
           </template>
-          <span v-else>-</span>
         </template>
       </el-table-column>
     </el-table>
     <el-empty v-if="!loading && houses.length === 0" description="暂无房源记录" />
 
-    <el-dialog v-model="rejectDialog" title="拒绝原因" width="400px">
-      <el-input v-model="rejectReason" type="textarea" rows="3" placeholder="请输入拒绝原因" />
+    <!-- 查看详情弹窗 -->
+    <el-dialog v-model="detailDialog" title="房源详情" width="640px">
+      <el-descriptions v-if="detailData" :column="2" border>
+        <el-descriptions-item label="标题" :span="2">{{ detailData.title }}</el-descriptions-item>
+        <el-descriptions-item label="租金">¥{{ detailData.rent }}</el-descriptions-item>
+        <el-descriptions-item label="面积">{{ detailData.area }}㎡</el-descriptions-item>
+        <el-descriptions-item label="区域" :span="2">{{ detailData.district }} {{ detailData.address }}</el-descriptions-item>
+        <el-descriptions-item label="房东">{{ detailData.landlord?.name || '--' }}</el-descriptions-item>
+        <el-descriptions-item label="联系电话">{{ detailData.landlord?.phone || '--' }}</el-descriptions-item>
+        <el-descriptions-item label="状态" :span="2">
+          <el-tag :type="statusType(detailData.status)" size="small" class="status-tag">{{ statusText(detailData.status) }}</el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item v-if="detailData.description" label="描述" :span="2">{{ detailData.description }}</el-descriptions-item>
+        <el-descriptions-item v-if="detailData.rejectReason" label="拒绝原因" :span="2">
+          <span style="color:#d9605a">{{ detailData.rejectReason }}</span>
+        </el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
+    <!-- 拒绝原因弹窗 -->
+    <el-dialog v-model="rejectDialog" title="拒绝原因" width="420px">
+      <p style="margin-bottom:12px;color:#6b7272;font-size:13px;">请填写拒绝该房源的原因，将通知房东</p>
+      <el-input v-model="rejectReason" type="textarea" :rows="3" placeholder="请输入拒绝原因" />
       <template #footer>
         <el-button @click="rejectDialog = false">取消</el-button>
-        <el-button type="primary" @click="submitReject" :loading="rejectLoading">确定</el-button>
+        <el-button type="primary" @click="submitReject" :loading="rejectLoading">确定提交</el-button>
       </template>
     </el-dialog>
   </div>
@@ -53,6 +74,10 @@ import request from '../../utils/request'
 const houses = ref([])
 const loading = ref(false)
 const statusFilter = ref('pending')
+
+const detailDialog = ref(false)
+const detailData = ref(null)
+
 const rejectDialog = ref(false)
 const rejectReason = ref('')
 const rejectId = ref(null)
@@ -63,6 +88,11 @@ function statusType(s) {
 }
 function statusText(s) {
   return { pending: '待审核', approved: '已上架', rejected: '未通过', rented: '已租出', offline: '已下架' }[s] || s
+}
+
+function showDetail(row) {
+  detailData.value = row
+  detailDialog.value = true
 }
 
 async function loadHouses() {
@@ -82,7 +112,7 @@ async function loadHouses() {
 async function handleReview(id, status) {
   try {
     await request.put(`/houses/${id}/review`, { status, reason: '' })
-    ElMessage.success('操作成功')
+    ElMessage.success(status === 'approved' ? '房源已上架' : '操作成功')
     loadHouses()
   } catch {}
 }

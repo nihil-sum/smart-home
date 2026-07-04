@@ -2,23 +2,23 @@
   <div>
     <div class="card-header">
       <h3>房源管理</h3>
-      <el-button type="primary" @click="$router.push('/landlord/houses/new')">发布新房源</el-button>
+      <el-button type="primary" @click="$router.push('/landlord/houses/new')">新增房源</el-button>
     </div>
     <el-table :data="houses" v-loading="loading" stripe style="width:100%">
       <el-table-column prop="title" label="标题" min-width="160" show-overflow-tooltip />
       <el-table-column prop="area" label="面积" width="80">
         <template #default="{ row }">{{ row.area }}㎡</template>
       </el-table-column>
-      <el-table-column prop="rent" label="租金" width="100">
-        <template #default="{ row }">¥{{ row.rent }}</template>
+      <el-table-column prop="rent" label="租金" width="110">
+        <template #default="{ row }">¥{{ Number(row.rent).toLocaleString() }}</template>
       </el-table-column>
       <el-table-column prop="address" label="地址" min-width="180" show-overflow-tooltip />
       <el-table-column label="状态" width="100">
         <template #default="{ row }">
-          <el-tag :type="statusType(row.status)" size="small">{{ statusText(row.status) }}</el-tag>
+          <el-tag :type="statusType(row.status)" size="small" class="status-tag">{{ statusText(row.status) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200" fixed="right">
+      <el-table-column label="操作" width="220" fixed="right">
         <template #default="{ row }">
           <el-button size="small" @click="$router.push(`/landlord/houses/${row.id}/edit`)">编辑</el-button>
           <el-button
@@ -30,7 +30,6 @@
           <el-button
             v-if="row.status === 'offline'"
             size="small"
-            type="success"
             @click="toggleStatus(row.id, 'approved')"
           >上架</el-button>
         </template>

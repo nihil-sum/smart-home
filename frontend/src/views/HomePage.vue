@@ -1,5 +1,11 @@
 <template>
   <div class="page-container">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h1 class="welcome-title">找到您的理想居所</h1>
+      <p class="welcome-subtitle">浏览精选房源，轻松预约看房</p>
+    </div>
+
     <el-card class="search-card" shadow="never">
       <el-form :model="searchForm" inline class="search-form">
         <el-form-item label="关键词">
@@ -101,18 +107,18 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.search-card {
-  margin-bottom: 20px;
+.welcome-section {
+  text-align: center;
+  padding: 40px 20px 32px;
 }
-.search-form {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
+.welcome-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1d1d;
+  margin-bottom: 8px;
 }
-.house-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+.welcome-subtitle {
+  font-size: 16px;
+  color: #6b7272;
 }
 </style>

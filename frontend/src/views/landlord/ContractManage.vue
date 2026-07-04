@@ -9,12 +9,12 @@
       <el-table-column prop="tenant?.name || tenant?.phone || '--'" label="租户" width="120" />
       <el-table-column prop="startDate" label="开始日期" width="120" />
       <el-table-column prop="endDate" label="结束日期" width="120" />
-      <el-table-column prop="rent" label="租金" width="100">
-        <template #default="{ row }">¥{{ row.rent }}</template>
+      <el-table-column prop="rent" label="租金" width="110">
+        <template #default="{ row }">¥{{ Number(row.rent).toLocaleString() }}</template>
       </el-table-column>
       <el-table-column label="状态" width="100">
         <template #default="{ row }">
-          <el-tag :type="statusType(row.status)" size="small">{{ statusText(row.status) }}</el-tag>
+          <el-tag :type="statusType(row.status)" size="small" class="status-tag">{{ statusText(row.status) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="120" fixed="right">
@@ -24,21 +24,21 @@
             type="primary" size="small"
             @click="signContract(row.id)"
           >签署</el-button>
-          <span v-else-if="row.status === 'active'">生效中</span>
-          <span v-else>-</span>
+          <span v-else-if="row.status === 'active'" class="status-text">生效中</span>
+          <span v-else class="status-text">-</span>
         </template>
       </el-table-column>
     </el-table>
     <el-empty v-if="!loading && contracts.length === 0" description="暂无合同记录" />
 
-    <el-dialog v-model="dialogVisible" title="创建合同" width="500px">
+    <el-dialog v-model="dialogVisible" title="创建合同" width="540px">
       <el-form :model="form" label-width="80px">
-        <el-form-item label="房源" prop="houseId" :rules="[{ required: true }]">
+        <el-form-item label="房源" prop="houseId">
           <el-select v-model="form.houseId" placeholder="选择房源" style="width:100%">
             <el-option v-for="h in houseOptions" :key="h.id" :label="h.title" :value="h.id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="租户" prop="tenantId" :rules="[{ required: true }]">
+        <el-form-item label="租户" prop="tenantId">
           <el-select v-model="form.tenantId" placeholder="选择租户" style="width:100%">
             <el-option v-for="t in tenantOptions" :key="t.id" :label="t.name || t.phone" :value="t.id" />
           </el-select>
@@ -152,3 +152,10 @@ onMounted(() => {
   loadOptions()
 })
 </script>
+
+<style scoped>
+.status-text {
+  color: #6b7272;
+  font-size: 13px;
+}
+</style>

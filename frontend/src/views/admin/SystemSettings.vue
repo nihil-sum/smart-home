@@ -1,32 +1,37 @@
 <template>
   <div>
     <h3>系统设置</h3>
-    <el-card shadow="never" class="settings-card">
+
+    <el-card shadow="never" class="settings-card" style="margin-top:20px">
       <el-form label-width="140px" v-loading="loading">
         <el-form-item label="房屋类型">
-          <el-select v-model="settings.houseTypes" multiple filterable allow-create default-first-option style="width:400px">
-            <el-option label="整租" value="整租" />
-            <el-option label="合租" value="合租" />
-            <el-option label="单间" value="单间" />
-            <el-option label="公寓" value="公寓" />
+          <el-select v-model="settings.houseTypes" multiple filterable allow-create default-first-option style="width:400px" placeholder="输入后回车添加">
+            <el-option v-for="t in defaultHouseTypes" :key="t" :label="t" :value="t" />
           </el-select>
+          <div class="form-item-tip">输入房屋类型名称后按回车添加</div>
         </el-form-item>
+
         <el-form-item label="支付方式">
-          <el-select v-model="settings.paymentMethods" multiple filterable allow-create default-first-option style="width:400px">
-            <el-option label="支付宝" value="支付宝" />
-            <el-option label="微信支付" value="微信支付" />
-            <el-option label="银行转账" value="银行转账" />
-            <el-option label="现金" value="现金" />
+          <el-select v-model="settings.paymentMethods" multiple filterable allow-create default-first-option style="width:400px" placeholder="输入后回车添加">
+            <el-option v-for="p in defaultPaymentMethods" :key="p" :label="p" :value="p" />
           </el-select>
+          <div class="form-item-tip">输入支付方式名称后按回车添加</div>
         </el-form-item>
+
         <el-form-item label="审核功能">
-          <el-switch v-model="settings.auditEnabled" active-text="开启" inactive-text="关闭" />
-          <span style="margin-left:12px;font-size:12px;color:#909399">
-            关闭后房源发布无需审核
+          <el-switch v-model="settings.auditEnabled" />
+          <span style="margin-left:12px;font-size:13px;color:#6b7272">
+            {{ settings.auditEnabled ? '开启后房源发布需管理员审核' : '关闭后房源发布无需审核' }}
           </span>
         </el-form-item>
+
+        <el-divider />
+
         <el-form-item>
           <el-button type="primary" @click="saveSettings" :loading="saveLoading">保存设置</el-button>
+          <span v-if="lastUpdated" class="last-updated">
+            上次更新：{{ lastUpdated }}
+          </span>
         </el-form-item>
       </el-form>
     </el-card>
@@ -40,6 +45,10 @@ import request from '../../utils/request'
 
 const loading = ref(false)
 const saveLoading = ref(false)
+const lastUpdated = ref('')
+const defaultHouseTypes = ['整租', '合租', '单间', '公寓']
+const defaultPaymentMethods = ['支付宝', '微信支付', '银行转账']
+
 const settings = reactive({
   houseTypes: [],
   paymentMethods: [],
@@ -51,9 +60,12 @@ async function loadSettings() {
   try {
     const res = await request.get('/settings')
     const s = res.settings || res.data || res
-    settings.houseTypes = s.houseTypes || ['整租', '合租', '单间', '公寓']
-    settings.paymentMethods = s.paymentMethods || ['支付宝', '微信支付', '银行转账']
+    settings.houseTypes = s.houseTypes || [...defaultHouseTypes]
+    settings.paymentMethods = s.paymentMethods || [...defaultPaymentMethods]
     settings.auditEnabled = s.auditEnabled !== undefined ? s.auditEnabled : true
+    if (s.updatedAt) {
+      lastUpdated.value = formatTime(s.updatedAt)
+    }
   } catch {
     // use defaults
   } finally {
@@ -61,11 +73,22 @@ async function loadSettings() {
   }
 }
 
+function formatTime(t) {
+  const d = new Date(t)
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
 async function saveSettings() {
   saveLoading.value = true
   try {
-    await request.put('/settings', { ...settings })
+    const res = await request.put('/settings', { ...settings })
     ElMessage.success('设置保存成功')
+    if (res?.updatedAt) {
+      lastUpdated.value = formatTime(res.updatedAt)
+    } else {
+      lastUpdated.value = formatTime(new Date())
+    }
   } catch {
     // handled
   } finally {
@@ -78,6 +101,17 @@ onMounted(loadSettings)
 
 <style scoped>
 .settings-card {
-  max-width: 700px;
+  max-width: 680px;
+}
+.form-item-tip {
+  font-size: 12px;
+  color: #6b7272;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.last-updated {
+  margin-left: 16px;
+  font-size: 13px;
+  color: #6b7272;
 }
 </style>

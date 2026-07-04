@@ -1,33 +1,36 @@
 <template>
   <div>
     <div class="card-header">
-      <h3>我的评价</h3>
+      <h2>我的评价</h2>
       <el-button type="primary" @click="showCreateDialog">写评价</el-button>
     </div>
 
     <el-table :data="reviews" v-loading="loading" stripe style="width:100%">
-      <el-table-column prop="house?.title || '--'" label="房源" min-width="150" />
-      <el-table-column label="评分" width="150">
+      <el-table-column prop="house?.title || '--'" label="房源" min-width="160" />
+      <el-table-column label="评分" width="180">
         <template #default="{ row }">
-          <el-rate v-model="row.rating" disabled :max="5" />
+          <el-rate v-model="row.rating" disabled :max="5" void-color="#e2e6e6" />
         </template>
       </el-table-column>
-      <el-table-column prop="content" label="评价内容" min-width="250" show-overflow-tooltip />
-      <el-table-column prop="createdAt" label="评价时间" width="160" />
+      <el-table-column prop="content" label="评价内容" min-width="260" show-overflow-tooltip />
+      <el-table-column label="评价时间" width="160">
+        <template #default="{ row }">{{ formatDate(row.createdAt) }}</template>
+      </el-table-column>
     </el-table>
-    <el-empty v-if="!loading && reviews.length === 0" description="暂无评价" />
 
-    <el-dialog v-model="dialogVisible" title="写评价" width="500px">
+    <el-empty v-if="!loading && reviews.length === 0" description="暂无评价，去写第一条评价吧" />
+
+    <el-dialog v-model="dialogVisible" title="写评价" width="500px" :close-on-click-modal="false">
       <el-form :model="form" label-width="80px">
-        <el-form-item label="房源" prop="houseId" :rules="[{ required: true, message: '请选择房源' }]">
+        <el-form-item label="房源" prop="houseId">
           <el-select v-model="form.houseId" placeholder="选择要评价的房源" style="width:100%">
             <el-option v-for="h in houseOptions" :key="h.id" :label="h.title" :value="h.id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="评分" prop="rating" :rules="[{ required: true, message: '请选择评分' }]">
-          <el-rate v-model="form.rating" :max="5" />
+        <el-form-item label="评分" prop="rating">
+          <el-rate v-model="form.rating" :max="5" void-color="#e2e6e6" />
         </el-form-item>
-        <el-form-item label="评价" prop="content" :rules="[{ required: true, message: '请输入评价内容' }]">
+        <el-form-item label="评价" prop="content">
           <el-input v-model="form.content" type="textarea" rows="4" placeholder="分享您的租房体验" />
         </el-form-item>
       </el-form>
@@ -52,6 +55,15 @@ const houseOptions = ref([])
 
 const form = ref({ houseId: '', rating: 5, content: '' })
 
+function formatDate(dateStr) {
+  if (!dateStr) return '--'
+  const d = new Date(dateStr)
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
 async function loadReviews() {
   loading.value = true
   try {
@@ -68,7 +80,7 @@ async function loadHouses() {
   try {
     const res = await request.get('/houses', { params: { myOnly: true } })
     houseOptions.value = res.houses || res.data || []
-  } catch {}
+  } catch { /* ignore */ }
 }
 
 function showCreateDialog() {
@@ -85,9 +97,7 @@ async function submitReview() {
     ElMessage.success('评价提交成功')
     dialogVisible.value = false
     loadReviews()
-  } catch {
-    // handled
-  } finally {
+  } catch { /* handled */ } finally {
     submitLoading.value = false
   }
 }
