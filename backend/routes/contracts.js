@@ -297,7 +297,11 @@ router.put('/:id/sign', authenticate, async (req, res, next) => {
     }
 
     await contract.save();
-    res.json(contract);
+    const populated = await Contract.findById(contract._id)
+      .populate('tenantId', 'name phone')
+      .populate('landlordId', 'name phone')
+      .populate('houseId', 'title address');
+    res.json(populated);
   } catch (err) {
     next(err);
   }
