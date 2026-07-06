@@ -57,14 +57,14 @@
       </el-table-column>
       <el-table-column label="状态" width="95" align="center">
         <template #default="{ row }">
-          <el-tag :type="statusType(row.status)" size="small" class="status-tag" effect="dark">{{ statusText(row.status) }}</el-tag>
+          <el-tag :type="statusType(row.status, row)" size="small" class="status-tag" effect="dark">{{ statusText(row.status, row) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="220" fixed="right">
         <template #default="{ row }">
           <el-button size="small" class="action-btn" @click="viewContract(row._id)">查看</el-button>
           <el-button
-            v-if="row.status === 'draft' || row.status === 'pending_sign'"
+            v-if="(row.status === 'draft' || row.status === 'pending_sign') && !row.signedByLandlord"
             type="success" size="small" class="action-btn"
             @click="signContract(row._id)"
           >签署</el-button>
@@ -187,7 +187,7 @@
       <template #footer>
         <el-button @click="detailVisible = false">关闭</el-button>
         <el-button
-          v-if="detailContract && (detailContract.status === 'draft' || detailContract.status === 'pending_sign')"
+          v-if="detailContract && (detailContract.status === 'draft' || detailContract.status === 'pending_sign') && !detailContract.signedByLandlord"
           type="success" @click="signFromDetail"
         >签署合同</el-button>
       </template>
@@ -259,10 +259,20 @@ const statusCounts = computed(() => ({
   terminated: contracts.value.filter(c => c.status === 'terminated').length,
 }))
 
-function statusType(s) {
+function statusType(s, contract) {
+  if (s === 'pending_sign') {
+    if (contract?.signedByLandlord) {
+      return 'primary'
+    }
+  }
   return { draft: 'info', pending_sign: 'warning', signed: 'success', terminated: 'danger' }[s] || 'info'
 }
-function statusText(s) {
+function statusText(s, contract) {
+  if (s === 'pending_sign') {
+    if (contract?.signedByLandlord) {
+      return '甲方已签·待乙方'
+    }
+  }
   return { draft: '草稿', pending_sign: '待签署', signed: '已签署', terminated: '已终止' }[s] || s
 }
 function formatDate(dateStr) {
@@ -353,7 +363,7 @@ async function signContract(id) {
     ElMessage.success('合同签署成功')
     loadContracts()
     if (detailVisible.value && detailContract.value?._id === id) {
-      detailVisible.value = false
+      await viewContract(id)
     }
   } catch (err) {
     if (err !== 'cancel') console.error('签署合同失败:', err)
